@@ -214,29 +214,50 @@
         *ngFor="let item of watchlistItems"
         (click)="openWatchlistStock(item)">
         <div class="watch-card-head">
-          <div>
-            <div class="watch-ticker">{{ item.ticker }}</div>
-            <div class="watch-name">{{ getWatchlistCompanyName(item) }}</div>
+          <div class="watch-identity">
+            <div class="watch-mark">{{ item.ticker[0] }}</div>
+            <div class="watch-identity-copy">
+              <div class="watch-ticker-row">
+                <div class="watch-ticker">{{ item.ticker }}</div>
+                <span class="watch-pill" [class]="'watch-pill ' + getChangeClass(getWatchlistDailyChange(item.ticker))">
+                  {{ formatSignedPct(getWatchlistDailyChange(item.ticker)) }}
+                </span>
+              </div>
+              <div class="watch-name">{{ getWatchlistCompanyName(item) }}</div>
+            </div>
           </div>
           <button
             type="button"
-            class="icon-btn danger"
+            class="icon-btn danger watch-delete-btn"
             (click)="removeFromWatchlist(item, $event)"
             [disabled]="watchlistActionLoading">
             Eliminar
           </button>
         </div>
+
         <div class="watch-card-body">
-          <div class="watch-metric">
-            <span class="watch-label">Precio</span>
-            <strong>{{ fmt(getWatchlistPrice(item.ticker)) }}</strong>
+          <div class="watch-price-block">
+            <span class="watch-label">Precio actual</span>
+            <strong class="watch-price-value">${{ fmt(getWatchlistPrice(item.ticker)) }}</strong>
           </div>
-          <div class="watch-metric">
-            <span class="watch-label">Hoy</span>
-            <strong class="watch-change" [class]="'watch-change ' + getChangeClass(getWatchlistDailyChange(item.ticker))">
-              {{ formatSignedPct(getWatchlistDailyChange(item.ticker)) }}
-            </strong>
+
+          <div class="watch-meta-grid">
+            <div class="watch-metric glass">
+              <span class="watch-label">Sesion</span>
+              <strong class="watch-change" [class]="'watch-change ' + getChangeClass(getWatchlistDailyChange(item.ticker))">
+                {{ formatSignedPct(getWatchlistDailyChange(item.ticker)) }}
+              </strong>
+            </div>
+            <div class="watch-metric glass watch-open-hint">
+              <span class="watch-label">Accion</span>
+              <strong>Ver detalle</strong>
+            </div>
           </div>
+        </div>
+
+        <div class="watch-card-footer">
+          <span class="watch-footer-line"></span>
+          <span class="watch-footer-text">Pulsa para abrir la ficha completa</span>
         </div>
       </div>
     </div>
