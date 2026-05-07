@@ -18,7 +18,6 @@ export class Nav implements OnInit {
 	navItems = [
 		{ path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
 		{ path: '/market',    label: 'Mercado',   icon: 'search' },
-		{ path: '/watchlist', label: 'Watchlist', icon: 'star' },
 		{ path: '/profile',   label: 'Perfil',    icon: 'person' },
 	];
 

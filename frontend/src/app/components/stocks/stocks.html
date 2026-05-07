@@ -209,8 +209,7 @@
     </div>
 
     <div class="watchlist-grid" *ngIf="!watchlistLoading && watchlistItems.length > 0">
-      <button
-        type="button"
+      <div
         class="card watch-card"
         *ngFor="let item of watchlistItems"
         (click)="openWatchlistStock(item)">
@@ -227,7 +226,7 @@
             Eliminar
           </button>
         </div>
-      </button>
+      </div>
     </div>
 
     <div *ngIf="watchlistNotice" class="watchlist-notice" [class.error]="watchlistNoticeType === 'error'">
