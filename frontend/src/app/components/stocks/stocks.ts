@@ -292,7 +292,7 @@ export class Stocks implements OnInit, OnDestroy {
   formatSignedPct(v: number | null | undefined): string {
     if (v == null) return 'N/D';
     const sign = v > 0 ? '+' : '';
-    return `${sign}${(v * 100).toFixed(2)}%`;
+    return `${sign}${Number(v).toFixed(2)}%`;
   }
 
   loadChart(ticker: string, period: string): void {
