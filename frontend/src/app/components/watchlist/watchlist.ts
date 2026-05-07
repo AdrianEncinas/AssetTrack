@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
-import { WatchlistDTO } from '../../models/interfaces';
+import { ChartDTO, StockFullDTO, WatchlistDTO } from '../../models/interfaces';
 
 @Component({
 	selector: 'app-watchlist',
@@ -14,6 +14,23 @@ export class Watchlist implements OnInit {
 	loading = true;
 	toast = '';
 	toastType: 'success' | 'error' = 'success';
+
+	showDetailModal = false;
+	detailTicker = '';
+	detailStock: StockFullDTO | null = null;
+	detailLoading = false;
+	detailError = '';
+	detailChartData: ChartDTO | null = null;
+	detailChartLoading = false;
+	detailSelectedChartPeriod = '1mo';
+	detailChartPeriods = [
+		{ label: '1D', value: '1d' },
+		{ label: '1S', value: '1wk' },
+		{ label: '1M', value: '1mo' },
+		{ label: '3M', value: '3mo' },
+		{ label: '1A', value: '1y' },
+		{ label: '5A', value: '5y' },
+	];
 
 	showAddModal = false;
 	addTicker = '';
@@ -91,6 +108,78 @@ export class Watchlist implements OnInit {
 				this.showToast('Error al eliminar.', 'error');
 			},
 		});
+	}
+
+	openDetail(item: WatchlistDTO): void {
+		this.showDetailModal = true;
+		this.detailTicker = item.ticker;
+		this.detailSelectedChartPeriod = '1mo';
+		this.detailChartData = null;
+		this.detailChartLoading = false;
+		this.detailError = '';
+		this.loadDetail(item.ticker);
+	}
+
+	closeDetail(): void {
+		this.showDetailModal = false;
+		this.detailTicker = '';
+		this.detailStock = null;
+		this.detailLoading = false;
+		this.detailError = '';
+		this.detailChartData = null;
+		this.detailChartLoading = false;
+		this.detailSelectedChartPeriod = '1mo';
+	}
+
+	loadDetail(ticker: string): void {
+		this.detailLoading = true;
+		this.detailError = '';
+		this.detailStock = null;
+		this.api.getStockDetails(ticker).pipe(
+			finalize(() => {
+				this.detailLoading = false;
+				this.cdr.detectChanges();
+			})
+		).subscribe({
+			next: (stock) => {
+				this.detailStock = stock;
+				this.loadDetailChart(stock.ticker, this.detailSelectedChartPeriod);
+			},
+			error: () => {
+				this.detailError = `No se encontraron datos para "${ticker}".`;
+			},
+		});
+	}
+
+	loadDetailChart(ticker: string, period: string): void {
+		this.detailChartLoading = true;
+		this.api.getStockChart(ticker, period).pipe(
+			finalize(() => {
+				this.detailChartLoading = false;
+				this.cdr.detectChanges();
+			})
+		).subscribe({
+			next: (data) => {
+				this.detailChartData = data;
+			},
+			error: () => {},
+		});
+	}
+
+	selectDetailChartPeriod(period: string): void {
+		this.detailSelectedChartPeriod = period;
+		if (this.detailStock) {
+			this.loadDetailChart(this.detailStock.ticker, period);
+		}
+	}
+
+	get detailChartChangePct(): number | null {
+		const history = this.detailChartData?.history;
+		if (!history || history.length < 2) return null;
+		const first = Number(history[0].price);
+		const last = Number(history[history.length - 1].price);
+		if (first === 0) return null;
+		return (last - first) / first;
 	}
 
 	showToast(msg: string, type: 'success' | 'error'): void {

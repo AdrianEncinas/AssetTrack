@@ -18,13 +18,13 @@
   </div>
 
   <div class="watchlist-grid" *ngIf="!loading && items.length > 0">
-    <div class="card watch-card" *ngFor="let item of items">
+    <div class="card watch-card" *ngFor="let item of items" (click)="openDetail(item)">
       <div class="watch-header">
         <div>
           <div class="watch-ticker">{{ item.ticker }}</div>
           <div class="watch-name">{{ item.companyName }}</div>
         </div>
-        <button class="icon-btn danger" (click)="remove(item)" [disabled]="deleteLoading[item.id]">
+        <button class="icon-btn danger" (click)="$event.stopPropagation(); remove(item)" [disabled]="deleteLoading[item.id]">
           <span *ngIf="!deleteLoading[item.id]">Eliminar</span>
           <span *ngIf="deleteLoading[item.id]">...</span>
         </button>
@@ -61,6 +61,36 @@
           {{ addLoading ? 'Agregando...' : 'Guardar' }}
         </button>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+    <div class="modal detail-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h3>Detalle de {{ detailTicker }}</h3>
+        </div>
+        <button class="icon-btn" (click)="closeDetail()">Cerrar</button>
+      </div>
+
+      <div *ngIf="detailLoading" class="loading-state">
+        <div class="spinner" style="width:24px;height:24px;border-width:3px"></div>
+        <span>Cargando datos...</span>
+      </div>
+
+      <div *ngIf="detailError && !detailLoading" class="alert error">{{ detailError }}</div>
+
+      <app-stock-details
+        *ngIf="detailStock && !detailLoading"
+        [stock]="detailStock"
+        [chartData]="detailChartData"
+        [chartLoading]="detailChartLoading"
+        [selectedChartPeriod]="detailSelectedChartPeriod"
+        [chartPeriods]="detailChartPeriods"
+        [changePct]="detailChartChangePct"
+        [potentialMode]="'raw'"
+        (chartPeriodChange)="selectDetailChartPeriod($event)">
+      </app-stock-details>
     </div>
   </div>
 
