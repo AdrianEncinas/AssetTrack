@@ -341,10 +341,58 @@
 	color: var(--text-secondary);
 }
 
+.watch-card-body {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	margin-top: 14px;
+}
+
+.watch-metric {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 10px 12px;
+	border-radius: 10px;
+	background: rgba(15, 23, 42, 0.34);
+	border: 1px solid rgba(148, 163, 184, 0.12);
+
+	strong {
+		font-size: 15px;
+		font-weight: 700;
+	}
+}
+
+.watch-label {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--text-muted);
+}
+
+.watch-change {
+	&.positive {
+		color: var(--positive);
+	}
+
+	&.negative {
+		color: var(--negative);
+	}
+
+	&.neutral {
+		color: var(--text-primary);
+	}
+}
+
 .watchlist-empty {
 	font-size: 13px;
 	color: var(--text-muted);
 	padding: 12px 2px;
+}
+
+.watchlist-hint {
+	font-size: 12px;
+	color: var(--text-muted);
 }
 
 .watchlist-notice {
@@ -420,6 +468,10 @@
 	.watch-card-head {
 		flex-direction: column;
 		align-items: flex-start;
+	}
+
+	.watch-card-body {
+		grid-template-columns: 1fr;
 	}
 
 	.icon-btn {

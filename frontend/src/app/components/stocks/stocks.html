@@ -216,7 +216,7 @@
         <div class="watch-card-head">
           <div>
             <div class="watch-ticker">{{ item.ticker }}</div>
-            <div class="watch-name">{{ item.companyName }}</div>
+            <div class="watch-name">{{ getWatchlistCompanyName(item) }}</div>
           </div>
           <button
             type="button"
@@ -226,11 +226,27 @@
             Eliminar
           </button>
         </div>
+        <div class="watch-card-body">
+          <div class="watch-metric">
+            <span class="watch-label">Precio</span>
+            <strong>{{ fmt(getWatchlistPrice(item.ticker)) }}</strong>
+          </div>
+          <div class="watch-metric">
+            <span class="watch-label">Hoy</span>
+            <strong class="watch-change" [class]="'watch-change ' + getChangeClass(getWatchlistDailyChange(item.ticker))">
+              {{ formatSignedPct(getWatchlistDailyChange(item.ticker)) }}
+            </strong>
+          </div>
+        </div>
       </div>
     </div>
 
     <div *ngIf="watchlistNotice" class="watchlist-notice" [class.error]="watchlistNoticeType === 'error'">
       {{ watchlistNotice }}
+    </div>
+
+    <div *ngIf="watchlistSnapshotsLoading && watchlistItems.length > 0" class="watchlist-hint">
+      Actualizando cotizaciones de la watchlist...
     </div>
   </div>
 

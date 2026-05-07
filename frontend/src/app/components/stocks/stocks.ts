@@ -1,12 +1,17 @@
 import { ChangeDetectorRef, Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Subject } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject, forkJoin, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, finalize, map, switchMap } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
 import { TickerSearchDTO, StockFullDTO, ChartDTO, WatchlistDTO } from '../../models/interfaces';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
+
+type WatchlistSnapshot = {
+  companyName: string;
+  currentPrice: number | null;
+  dailyChangePct: number | null;
+};
 
 @Component({
   selector: 'app-stocks',
@@ -45,6 +50,8 @@ export class Stocks implements OnInit, OnDestroy {
   watchlistActionLoading = false;
   watchlistNotice = '';
   watchlistNoticeType: 'success' | 'error' = 'success';
+  watchlistSnapshots: Record<string, WatchlistSnapshot> = {};
+  watchlistSnapshotsLoading = false;
 
   constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
 
@@ -81,10 +88,53 @@ export class Stocks implements OnInit, OnDestroy {
     ).subscribe({
       next: (items) => {
         this.watchlistItems = items;
+        this.loadWatchlistSnapshots(items);
       },
       error: () => {
         this.watchlistError = 'No se pudo cargar la watchlist.';
       },
+    });
+  }
+
+  loadWatchlistSnapshots(items: WatchlistDTO[]): void {
+    if (items.length === 0) {
+      this.watchlistSnapshots = {};
+      this.watchlistSnapshotsLoading = false;
+      return;
+    }
+
+    this.watchlistSnapshotsLoading = true;
+    const requests = items.map((item) =>
+      this.api.getStockDetails(item.ticker).pipe(
+        map((stock) => ({
+          ticker: item.ticker,
+          snapshot: {
+            companyName: stock.longName || item.companyName,
+            currentPrice: stock.currentPrice,
+            dailyChangePct: stock.dailyChangePct,
+          } as WatchlistSnapshot,
+        })),
+        catchError(() => of({
+          ticker: item.ticker,
+          snapshot: {
+            companyName: item.companyName,
+            currentPrice: null,
+            dailyChangePct: null,
+          } as WatchlistSnapshot,
+        }))
+      )
+    );
+
+    forkJoin(requests).pipe(
+      finalize(() => {
+        this.watchlistSnapshotsLoading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe((entries) => {
+      this.watchlistSnapshots = entries.reduce((acc, entry) => {
+        acc[entry.ticker.toUpperCase()] = entry.snapshot;
+        return acc;
+      }, {} as Record<string, WatchlistSnapshot>);
     });
   }
 
@@ -154,6 +204,11 @@ export class Stocks implements OnInit, OnDestroy {
     ).subscribe({
       next: (item) => {
         this.watchlistItems = [item, ...this.watchlistItems];
+        this.upsertWatchlistSnapshot(item.ticker, {
+          companyName: this.selectedStock?.longName || item.companyName,
+          currentPrice: this.selectedStock?.currentPrice ?? null,
+          dailyChangePct: this.selectedStock?.dailyChangePct ?? null,
+        });
         this.showWatchlistNotice(`${item.ticker} agregado a watchlist`, 'success');
       },
       error: (err) => {
@@ -175,6 +230,7 @@ export class Stocks implements OnInit, OnDestroy {
     ).subscribe({
       next: () => {
         this.watchlistItems = this.watchlistItems.filter((i) => i.id !== item.id);
+        this.removeWatchlistSnapshot(item.ticker);
         this.showWatchlistNotice(`${item.ticker} eliminado de watchlist`, 'success');
       },
       error: () => {
@@ -195,6 +251,48 @@ export class Stocks implements OnInit, OnDestroy {
       this.watchlistNotice = '';
       this.cdr.detectChanges();
     }, 2800);
+  }
+
+  upsertWatchlistSnapshot(ticker: string, snapshot: WatchlistSnapshot): void {
+    this.watchlistSnapshots = {
+      ...this.watchlistSnapshots,
+      [ticker.toUpperCase()]: snapshot,
+    };
+  }
+
+  removeWatchlistSnapshot(ticker: string): void {
+    const next = { ...this.watchlistSnapshots };
+    delete next[ticker.toUpperCase()];
+    this.watchlistSnapshots = next;
+  }
+
+  getWatchlistSnapshot(ticker: string): WatchlistSnapshot | null {
+    return this.watchlistSnapshots[ticker.toUpperCase()] || null;
+  }
+
+  getWatchlistCompanyName(item: WatchlistDTO): string {
+    return this.getWatchlistSnapshot(item.ticker)?.companyName || item.companyName;
+  }
+
+  getWatchlistPrice(ticker: string): number | null {
+    return this.getWatchlistSnapshot(ticker)?.currentPrice ?? null;
+  }
+
+  getWatchlistDailyChange(ticker: string): number | null {
+    return this.getWatchlistSnapshot(ticker)?.dailyChangePct ?? null;
+  }
+
+  getChangeClass(change: number | null | undefined): string {
+    if (change == null) return '';
+    if (change > 0) return 'positive';
+    if (change < 0) return 'negative';
+    return 'neutral';
+  }
+
+  formatSignedPct(v: number | null | undefined): string {
+    if (v == null) return 'N/D';
+    const sign = v > 0 ? '+' : '';
+    return `${sign}${(v * 100).toFixed(2)}%`;
   }
 
   loadChart(ticker: string, period: string): void {
