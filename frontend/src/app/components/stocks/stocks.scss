@@ -160,6 +160,10 @@
 	}
 }
 
+.watchlist-add-btn {
+	white-space: nowrap;
+}
+
 .stock-logo {
 	width: 48px; height: 48px;
 	border-radius: 12px;
@@ -273,6 +277,105 @@
 	overflow-y: auto;
 }
 
+.watchlist-section {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding-top: 4px;
+}
+
+.watchlist-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	h3 {
+		font-size: 18px;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+	}
+
+	p {
+		margin-top: 2px;
+		font-size: 12px;
+		color: var(--text-muted);
+	}
+}
+
+.watchlist-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+	gap: 12px;
+}
+
+.watch-card {
+	width: 100%;
+	text-align: left;
+	background: linear-gradient(180deg, rgba(36, 52, 80, 0.55), rgba(30, 41, 59, 1));
+	border: 1px solid var(--border);
+	cursor: pointer;
+	transition: transform 0.18s ease, box-shadow 0.18s ease;
+
+	&:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 24px rgba(15, 23, 42, 0.35);
+	}
+}
+
+.watch-card-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.watch-ticker {
+	font-size: 16px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+
+.watch-name {
+	margin-top: 4px;
+	font-size: 12px;
+	color: var(--text-secondary);
+}
+
+.watchlist-empty {
+	font-size: 13px;
+	color: var(--text-muted);
+	padding: 12px 2px;
+}
+
+.watchlist-notice {
+	font-size: 12px;
+	color: #86efac;
+
+	&.error {
+		color: #fca5a5;
+	}
+}
+
+.icon-btn {
+	border: 1px solid var(--border);
+	background: transparent;
+	color: var(--text-secondary);
+	border-radius: 8px;
+	padding: 8px 12px;
+	transition: all 0.18s ease;
+
+	&:hover {
+		color: var(--text-primary);
+		border-color: var(--border-light);
+	}
+
+	&.danger {
+		color: var(--negative);
+		border-color: rgba(239, 68, 68, 0.25);
+		background: rgba(239, 68, 68, 0.08);
+	}
+}
+
 @media (max-width: 700px) {
 	.market-page {
 		padding: 16px;
@@ -295,6 +398,7 @@
 	.stock-header-right {
 		width: 100%;
 		justify-content: space-between;
+		flex-wrap: wrap;
 	}
 
 	.chart-header {
@@ -311,6 +415,16 @@
 	.result-exch,
 	.result-action {
 		display: none;
+	}
+
+	.watch-card-head {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.icon-btn {
+		width: 100%;
+		text-align: center;
 	}
 }
 

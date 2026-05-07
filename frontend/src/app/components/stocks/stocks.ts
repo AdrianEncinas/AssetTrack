@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
-import { TickerSearchDTO, StockFullDTO, ChartDTO } from '../../models/interfaces';
+import { TickerSearchDTO, StockFullDTO, ChartDTO, WatchlistDTO } from '../../models/interfaces';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -39,9 +39,17 @@ export class Stocks implements OnInit, OnDestroy {
     { label: '5A', value: '5y' },
   ];
 
+  watchlistItems: WatchlistDTO[] = [];
+  watchlistLoading = false;
+  watchlistError = '';
+  watchlistActionLoading = false;
+  watchlistNotice = '';
+  watchlistNoticeType: 'success' | 'error' = 'success';
+
   constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    this.loadWatchlist();
     this.searchSubject.pipe(
       debounceTime(350),
       distinctUntilChanged(),
@@ -59,6 +67,24 @@ export class Stocks implements OnInit, OnDestroy {
         this.results = res;
       },
       error: () => { this.results = []; },
+    });
+  }
+
+  loadWatchlist(): void {
+    this.watchlistLoading = true;
+    this.watchlistError = '';
+    this.api.getWatchlist().pipe(
+      finalize(() => {
+        this.watchlistLoading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (items) => {
+        this.watchlistItems = items;
+      },
+      error: () => {
+        this.watchlistError = 'No se pudo cargar la watchlist.';
+      },
     });
   }
 
@@ -101,6 +127,74 @@ export class Stocks implements OnInit, OnDestroy {
         this.stockError = `No se encontraron datos para "${ticker}".`;
       },
     });
+  }
+
+  openWatchlistStock(item: WatchlistDTO): void {
+    this.query = item.ticker;
+    this.results = [];
+    this.loadStockDetails(item.ticker);
+  }
+
+  addSelectedToWatchlist(): void {
+    if (!this.selectedStock || this.watchlistActionLoading) return;
+    if (this.isInWatchlist(this.selectedStock.ticker)) {
+      this.showWatchlistNotice('La accion ya esta en watchlist.', 'error');
+      return;
+    }
+
+    this.watchlistActionLoading = true;
+    this.api.addToWatchlist({
+      ticker: this.selectedStock.ticker,
+      companyName: this.selectedStock.longName || this.selectedStock.ticker,
+    }).pipe(
+      finalize(() => {
+        this.watchlistActionLoading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (item) => {
+        this.watchlistItems = [item, ...this.watchlistItems];
+        this.showWatchlistNotice(`${item.ticker} agregado a watchlist`, 'success');
+      },
+      error: (err) => {
+        const msg = typeof err?.error === 'string' ? err.error : 'No se pudo agregar a watchlist.';
+        this.showWatchlistNotice(msg, 'error');
+      },
+    });
+  }
+
+  removeFromWatchlist(item: WatchlistDTO, event?: Event): void {
+    event?.stopPropagation();
+    if (this.watchlistActionLoading) return;
+    this.watchlistActionLoading = true;
+    this.api.deleteFromWatchlist(item.id).pipe(
+      finalize(() => {
+        this.watchlistActionLoading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: () => {
+        this.watchlistItems = this.watchlistItems.filter((i) => i.id !== item.id);
+        this.showWatchlistNotice(`${item.ticker} eliminado de watchlist`, 'success');
+      },
+      error: () => {
+        this.showWatchlistNotice('No se pudo eliminar de watchlist.', 'error');
+      },
+    });
+  }
+
+  isInWatchlist(ticker: string | null | undefined): boolean {
+    if (!ticker) return false;
+    return this.watchlistItems.some((item) => item.ticker.toUpperCase() === ticker.toUpperCase());
+  }
+
+  showWatchlistNotice(msg: string, type: 'success' | 'error'): void {
+    this.watchlistNotice = msg;
+    this.watchlistNoticeType = type;
+    setTimeout(() => {
+      this.watchlistNotice = '';
+      this.cdr.detectChanges();
+    }, 2800);
   }
 
   loadChart(ticker: string, period: string): void {

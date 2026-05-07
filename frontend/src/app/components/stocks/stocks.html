@@ -71,6 +71,13 @@
         <span class="badge" [class.badge-positive]="(chartChangePct ?? 0) >= 0" [class.badge-negative]="(chartChangePct ?? 0) < 0">
           {{ (chartChangePct ?? 0) >= 0 ? '+' : '' }}{{ pct(chartChangePct) }}
         </span>
+        <button
+          type="button"
+          class="btn btn-primary watchlist-add-btn"
+          (click)="addSelectedToWatchlist()"
+          [disabled]="watchlistActionLoading || isInWatchlist(selectedStock.ticker)">
+          {{ isInWatchlist(selectedStock.ticker) ? 'En watchlist' : (watchlistActionLoading ? 'Agregando...' : 'Anadir a watchlist') }}
+        </button>
       </div>
     </div>
 
@@ -180,6 +187,52 @@
       <p class="summary-text">{{ selectedStock.businessSummary }}</p>
     </div>
 
+  </div>
+
+  <div class="watchlist-section">
+    <div class="watchlist-head">
+      <div>
+        <h3>Watchlist</h3>
+        <p>Acciones guardadas desde mercado</p>
+      </div>
+    </div>
+
+    <div *ngIf="watchlistLoading" class="loading-state">
+      <div class="spinner" style="width:24px;height:24px;border-width:3px"></div>
+      <span>Cargando watchlist...</span>
+    </div>
+
+    <div *ngIf="watchlistError && !watchlistLoading" class="error-msg">{{ watchlistError }}</div>
+
+    <div class="watchlist-empty" *ngIf="!watchlistLoading && !watchlistError && watchlistItems.length === 0">
+      No tienes acciones guardadas en watchlist todavia.
+    </div>
+
+    <div class="watchlist-grid" *ngIf="!watchlistLoading && watchlistItems.length > 0">
+      <button
+        type="button"
+        class="card watch-card"
+        *ngFor="let item of watchlistItems"
+        (click)="openWatchlistStock(item)">
+        <div class="watch-card-head">
+          <div>
+            <div class="watch-ticker">{{ item.ticker }}</div>
+            <div class="watch-name">{{ item.companyName }}</div>
+          </div>
+          <button
+            type="button"
+            class="icon-btn danger"
+            (click)="removeFromWatchlist(item, $event)"
+            [disabled]="watchlistActionLoading">
+            Eliminar
+          </button>
+        </div>
+      </button>
+    </div>
+
+    <div *ngIf="watchlistNotice" class="watchlist-notice" [class.error]="watchlistNoticeType === 'error'">
+      {{ watchlistNotice }}
+    </div>
   </div>
 
 </div>
