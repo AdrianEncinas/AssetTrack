@@ -29,6 +29,7 @@ export class Stocks implements OnInit, OnDestroy {
   searching = false;
 
   selectedStock: StockFullDTO | null = null;
+  showStockModal = false;
   stockLoading = false;
   stockError = '';
 
@@ -156,7 +157,16 @@ export class Stocks implements OnInit, OnDestroy {
   selectStock(result: TickerSearchDTO): void {
     this.query = result.symbol;
     this.results = [];
-    this.loadStockDetails(result.symbol);
+    this.openStockModal(result.symbol);
+  }
+
+  openStockModal(ticker: string): void {
+    this.showStockModal = true;
+    this.loadStockDetails(ticker);
+  }
+
+  closeStockModal(): void {
+    this.showStockModal = false;
   }
 
   loadStockDetails(ticker: string): void {
@@ -182,7 +192,7 @@ export class Stocks implements OnInit, OnDestroy {
   openWatchlistStock(item: WatchlistDTO): void {
     this.query = item.ticker;
     this.results = [];
-    this.loadStockDetails(item.ticker);
+    this.openStockModal(item.ticker);
   }
 
   addSelectedToWatchlist(): void {
