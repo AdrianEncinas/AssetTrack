@@ -208,57 +208,45 @@
       No tienes acciones guardadas en watchlist todavia.
     </div>
 
-    <div class="watchlist-grid" *ngIf="!watchlistLoading && watchlistItems.length > 0">
-      <div
-        class="card watch-card"
-        *ngFor="let item of watchlistItems"
-        (click)="openWatchlistStock(item)">
-        <div class="watch-card-head">
-          <div class="watch-identity">
-            <div class="watch-mark">{{ item.ticker[0] }}</div>
-            <div class="watch-identity-copy">
-              <div class="watch-ticker-row">
-                <div class="watch-ticker">{{ item.ticker }}</div>
-                <span class="watch-pill" [class]="'watch-pill ' + getChangeClass(getWatchlistDailyChange(item.ticker))">
+    <div class="card watchlist-list-card" *ngIf="!watchlistLoading && watchlistItems.length > 0" style="padding:0;overflow:hidden">
+      <div class="table-scroll">
+        <table class="data-table watchlist-list">
+          <thead>
+            <tr>
+              <th>Activo</th>
+              <th>Precio</th>
+              <th>Sesion</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of watchlistItems" class="watchlist-row" (click)="openWatchlistStock(item)">
+              <td>
+                <button type="button" class="watch-asset-btn" (click)="openWatchlistStock(item)">
+                  <span class="watch-symbol">{{ item.ticker }}</span>
+                  <span class="watch-company">{{ getWatchlistCompanyName(item) }}</span>
+                </button>
+              </td>
+              <td class="watch-price">${{ fmt(getWatchlistPrice(item.ticker)) }}</td>
+              <td>
+                <span class="badge" [class.badge-positive]="(getWatchlistDailyChange(item.ticker) ?? 0) >= 0" [class.badge-negative]="(getWatchlistDailyChange(item.ticker) ?? 0) < 0">
                   {{ formatSignedPct(getWatchlistDailyChange(item.ticker)) }}
                 </span>
-              </div>
-              <div class="watch-name">{{ getWatchlistCompanyName(item) }}</div>
-            </div>
-          </div>
-          <button
-            type="button"
-            class="icon-btn danger watch-delete-btn"
-            (click)="removeFromWatchlist(item, $event)"
-            [disabled]="watchlistActionLoading">
-            Eliminar
-          </button>
-        </div>
-
-        <div class="watch-card-body">
-          <div class="watch-price-block">
-            <span class="watch-label">Precio actual</span>
-            <strong class="watch-price-value">${{ fmt(getWatchlistPrice(item.ticker)) }}</strong>
-          </div>
-
-          <div class="watch-meta-grid">
-            <div class="watch-metric glass">
-              <span class="watch-label">Sesion</span>
-              <strong class="watch-change" [class]="'watch-change ' + getChangeClass(getWatchlistDailyChange(item.ticker))">
-                {{ formatSignedPct(getWatchlistDailyChange(item.ticker)) }}
-              </strong>
-            </div>
-            <div class="watch-metric glass watch-open-hint">
-              <span class="watch-label">Accion</span>
-              <strong>Ver detalle</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="watch-card-footer">
-          <span class="watch-footer-line"></span>
-          <span class="watch-footer-text">Pulsa para abrir la ficha completa</span>
-        </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    (click)="removeFromWatchlist(item, $event)"
+                    [disabled]="watchlistActionLoading">
+                    Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 

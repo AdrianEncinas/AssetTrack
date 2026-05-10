@@ -17,19 +17,39 @@
     <p>Anade tickers para construir tu lista de seguimiento.</p>
   </div>
 
-  <div class="watchlist-grid" *ngIf="!loading && items.length > 0">
-    <div class="card watch-card" *ngFor="let item of items" (click)="openDetail(item)">
-      <div class="watch-header">
-        <div>
-          <div class="watch-ticker">{{ item.ticker }}</div>
-          <div class="watch-name">{{ item.companyName }}</div>
-        </div>
-        <button class="icon-btn danger" (click)="$event.stopPropagation(); remove(item)" [disabled]="deleteLoading[item.id]">
-          <span *ngIf="!deleteLoading[item.id]">Eliminar</span>
-          <span *ngIf="deleteLoading[item.id]">...</span>
-        </button>
-      </div>
-      <div class="watch-meta">Agregado: {{ item.id }}</div>
+  <div class="card watchlist-list-card" *ngIf="!loading && items.length > 0" style="padding:0;overflow:hidden">
+    <div class="table-scroll">
+      <table class="data-table watchlist-list">
+        <thead>
+          <tr>
+            <th>Activo</th>
+            <th class="hide-sm">Ticker</th>
+            <th class="hide-sm">Referencia</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items" class="watchlist-row" (click)="openDetail(item)">
+            <td>
+              <button type="button" class="watch-asset-btn" (click)="openDetail(item)">
+                <span class="watch-company">{{ item.companyName }}</span>
+              </button>
+            </td>
+            <td class="hide-sm">
+              <span class="watch-symbol">{{ item.ticker }}</span>
+            </td>
+            <td class="hide-sm">{{ item.id }}</td>
+            <td>
+              <div class="row-actions">
+                <button class="icon-btn danger" (click)="$event.stopPropagation(); remove(item)" [disabled]="deleteLoading[item.id]">
+                  <span *ngIf="!deleteLoading[item.id]">Eliminar</span>
+                  <span *ngIf="deleteLoading[item.id]">...</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
