@@ -2,20 +2,20 @@
 
 // ─── CSS Variables ───────────────────────────────────────────────
 :root {
-	--bg-base:       #071821;
-	--bg-card:       #102733;
-	--bg-card-hover: #173848;
-	--bg-input:      #0b1f2a;
-	--border:        #245065;
-	--border-light:  #2f6b86;
+	--bg-base:       #0b1220;
+	--bg-card:       #161f33;
+	--bg-card-hover: #202b44;
+	--bg-input:      #10182a;
+	--border:        #2b3752;
+	--border-light:  #3c4d73;
 
-	--text-primary:   #edf9ff;
-	--text-secondary: #a2c8d8;
-	--text-muted:     #6f9aae;
+	--text-primary:   #e7edf7;
+	--text-secondary: #aab8cf;
+	--text-muted:     #7484a0;
 
-	--accent:        #14b8a6;
-	--accent-hover:  #0d9488;
-	--accent-glow:   rgba(20, 184, 166, 0.28);
+	--accent:        #3b82f6;
+	--accent-hover:  #2563eb;
+	--accent-glow:   rgba(59, 130, 246, 0.26);
 
 	--positive:      #22c55e;
 	--positive-bg:   rgba(16, 185, 129, 0.12);
@@ -50,9 +50,9 @@ html, body {
 
 body {
 	background-image:
-		radial-gradient(circle at 10% -10%, rgba(20, 184, 166, 0.18), transparent 42%),
-		radial-gradient(circle at 92% 10%, rgba(251, 191, 36, 0.12), transparent 36%),
-		linear-gradient(180deg, #081a24 0%, #06151d 42%, #051019 100%);
+		radial-gradient(circle at 10% -10%, rgba(59, 130, 246, 0.16), transparent 42%),
+		radial-gradient(circle at 92% 10%, rgba(99, 102, 241, 0.1), transparent 36%),
+		linear-gradient(180deg, #0c1322 0%, #0a1020 45%, #090f1b 100%);
 	background-attachment: fixed;
 }
 
