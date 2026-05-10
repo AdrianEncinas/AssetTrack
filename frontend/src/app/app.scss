@@ -1,6 +1,7 @@
 .app-shell {
 	min-height: 100vh;
 	position: relative;
+	overflow-x: clip;
 
 	.mobile-topbar,
 	.nav-backdrop {
@@ -14,6 +15,7 @@
 			margin-left: var(--nav-width);
 			flex: 1;
 			min-width: 0;
+			padding-bottom: 22px;
 		}
 	}
 }
@@ -28,7 +30,7 @@
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	background: rgba(15, 23, 42, 0.92);
+	background: rgba(7, 24, 33, 0.92);
 	border-bottom: 1px solid var(--border);
 	backdrop-filter: blur(8px);
 	z-index: 120;
@@ -58,6 +60,7 @@
 	font-size: 15px;
 	font-weight: 700;
 	letter-spacing: -0.01em;
+	font-family: 'Sora', 'Manrope', sans-serif;
 }
 
 .nav-backdrop {
@@ -80,7 +83,8 @@
 		&.has-nav {
 			.main-content {
 				margin-left: 0;
-				padding-top: 60px;
+				padding-top: 72px;
+				padding-bottom: 16px;
 			}
 		}
 

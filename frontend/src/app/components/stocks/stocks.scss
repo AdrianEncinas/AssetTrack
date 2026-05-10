@@ -1,6 +1,7 @@
 .market-page {
-	padding: 28px 32px;
-	max-width: 1100px;
+	width: min(1120px, 100%);
+	margin: 0 auto;
+	padding: clamp(16px, 3vw, 28px) clamp(14px, 3vw, 32px);
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
@@ -13,7 +14,7 @@
 
 .search-wrapper {
 	position: relative;
-	max-width: 760px;
+	width: min(760px, 100%);
 }
 
 .search-hero {
@@ -557,7 +558,7 @@
 
 @media (max-width: 700px) {
 	.market-page {
-		padding: 16px;
+		padding: 14px;
 		gap: 18px;
 	}
 
@@ -578,6 +579,7 @@
 		width: 100%;
 		justify-content: space-between;
 		flex-wrap: wrap;
+		gap: 10px;
 	}
 
 	.chart-header {
@@ -612,6 +614,10 @@
 	.icon-btn {
 		width: 100%;
 		text-align: center;
+	}
+
+	.watchlist-grid {
+		grid-template-columns: 1fr;
 	}
 }
 

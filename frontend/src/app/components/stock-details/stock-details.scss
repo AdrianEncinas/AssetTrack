@@ -182,6 +182,8 @@
   .stock-header-right {
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .chart-header {
@@ -193,5 +195,26 @@
   .period-btns {
     width: 100%;
     overflow-x: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .stock-logo,
+  .stock-logo-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .stock-ticker {
+    font-size: 17px;
+  }
+
+  .stock-price {
+    font-size: 22px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
   }
 }

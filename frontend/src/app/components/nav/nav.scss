@@ -11,6 +11,7 @@
 	z-index: 100;
 	padding: 16px 12px;
 	transition: transform 0.22s ease;
+	overflow-y: auto;
 }
 
 .sidebar-brand {
@@ -23,8 +24,8 @@
 
 	.brand-icon {
 		width: 38px; height: 38px;
-		background: rgba(99,102,241,0.1);
-		border: 1px solid rgba(99,102,241,0.25);
+		background: rgba(20,184,166,0.12);
+		border: 1px solid rgba(20,184,166,0.3);
 		border-radius: 10px;
 		display: flex;
 		align-items: center;
@@ -94,7 +95,7 @@
 	}
 
 	&.active {
-		background: rgba(99,102,241,0.12);
+		background: rgba(20,184,166,0.14);
 		color: var(--accent);
 
 		.nav-icon { opacity: 1; }
@@ -174,6 +175,7 @@
 
 @media (max-width: 960px) {
 	.sidebar {
+		width: min(86vw, 310px);
 		transform: translateX(-100%);
 		box-shadow: none;
 

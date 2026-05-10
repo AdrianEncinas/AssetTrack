@@ -1,33 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
 
 // ─── CSS Variables ───────────────────────────────────────────────
 :root {
-	--bg-base:       #0F172A;
-	--bg-card:       #1E293B;
-	--bg-card-hover: #243450;
-	--bg-input:      #0F172A;
-	--border:        #334155;
-	--border-light:  #475569;
+	--bg-base:       #071821;
+	--bg-card:       #102733;
+	--bg-card-hover: #173848;
+	--bg-input:      #0b1f2a;
+	--border:        #245065;
+	--border-light:  #2f6b86;
 
-	--text-primary:   #F1F5F9;
-	--text-secondary: #94A3B8;
-	--text-muted:     #64748B;
+	--text-primary:   #edf9ff;
+	--text-secondary: #a2c8d8;
+	--text-muted:     #6f9aae;
 
-	--accent:        #6366F1;
-	--accent-hover:  #4F46E5;
-	--accent-glow:   rgba(99, 102, 241, 0.3);
+	--accent:        #14b8a6;
+	--accent-hover:  #0d9488;
+	--accent-glow:   rgba(20, 184, 166, 0.28);
 
-	--positive:      #10B981;
+	--positive:      #22c55e;
 	--positive-bg:   rgba(16, 185, 129, 0.12);
-	--negative:      #EF4444;
+	--negative:      #f87171;
 	--negative-bg:   rgba(239, 68, 68, 0.12);
-	--warn:          #F59E0B;
+	--warn:          #f59e0b;
 
-	--shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
-	--shadow-md:  0 4px 16px rgba(0,0,0,0.5);
-	--shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
+	--shadow-sm:  0 10px 24px rgba(1, 9, 14, 0.2);
+	--shadow-md:  0 18px 36px rgba(1, 9, 14, 0.28);
+	--shadow-lg:  0 28px 54px rgba(1, 9, 14, 0.34);
 
-	--radius-sm:  6px;
+	--radius-sm:  8px;
 	--radius-md:  12px;
 	--radius-lg:  20px;
 
@@ -41,10 +41,24 @@ html, body {
 	height: 100%;
 	background-color: var(--bg-base);
 	color: var(--text-primary);
-	font-family: 'Inter', system-ui, -apple-system, sans-serif;
+	font-family: 'Manrope', 'Segoe UI', sans-serif;
 	font-size: 14px;
 	line-height: 1.6;
 	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden;
+}
+
+body {
+	background-image:
+		radial-gradient(circle at 10% -10%, rgba(20, 184, 166, 0.18), transparent 42%),
+		radial-gradient(circle at 92% 10%, rgba(251, 191, 36, 0.12), transparent 36%),
+		linear-gradient(180deg, #081a24 0%, #06151d 42%, #051019 100%);
+	background-attachment: fixed;
+}
+
+h1, h2, h3, h4 {
+	font-family: 'Sora', 'Manrope', sans-serif;
+	line-height: 1.2;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -118,7 +132,7 @@ input, textarea, select { font-family: inherit; }
 		&:hover { background: rgba(16,185,129,0.25); }
 	}
 	&.btn-sm { padding: 5px 12px; font-size: 12px; }
-	&.btn-lg { padding: 12px 28px; font-size: 15px; font-weight: 600; border-radius: var(--radius-md); }
+	&.btn-lg { padding: 12px 28px; font-size: clamp(14px, 2vw, 15px); font-weight: 700; border-radius: var(--radius-md); }
 	&:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
@@ -166,6 +180,7 @@ input, textarea, select { font-family: inherit; }
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding: clamp(10px, 2.4vw, 24px);
 	z-index: 1000;
 	backdrop-filter: blur(4px);
 
@@ -173,9 +188,11 @@ input, textarea, select { font-family: inherit; }
 		background: var(--bg-card);
 		border: 1px solid var(--border);
 		border-radius: var(--radius-lg);
-		padding: 28px;
+		padding: clamp(16px, 2.4vw, 28px);
 		width: 100%;
 		max-width: 440px;
+		max-height: min(90vh, 760px);
+		overflow-y: auto;
 		box-shadow: var(--shadow-lg);
 
 		.modal-header {
@@ -233,6 +250,11 @@ input, textarea, select { font-family: inherit; }
 	tr:hover td { background: rgba(255,255,255,0.02); }
 }
 
+.table-scroll {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
 // ─── Loading spinner ──────────────────────────────────────────────
 .spinner {
 	width: 20px; height: 20px;
@@ -257,6 +279,33 @@ input, textarea, select { font-family: inherit; }
 
 	.empty-icon { font-size: 36px; opacity: 0.4; }
 	p { text-align: center; }
+}
+
+@media (max-width: 900px) {
+	.card {
+		padding: 16px;
+	}
+
+	.modal-overlay {
+		align-items: flex-end;
+	}
+
+	.modal-overlay .modal {
+		max-height: 92vh;
+		border-radius: 16px 16px 0 0;
+	}
+}
+
+@media (max-width: 640px) {
+	.btn {
+		min-height: 40px;
+	}
+
+	.data-table th,
+	.data-table td {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 }
 
 @media (max-width: 900px) {

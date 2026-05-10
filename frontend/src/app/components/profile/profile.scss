@@ -1,5 +1,7 @@
 .profile-page {
-	padding: 28px 32px;
+	width: min(1120px, 100%);
+	margin: 0 auto;
+	padding: clamp(16px, 3vw, 28px) clamp(14px, 3vw, 32px);
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
@@ -49,7 +51,7 @@
 	display: flex;
 	align-items: center;
 	gap: 18px;
-	background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.22), transparent 40%), linear-gradient(180deg, rgba(36, 52, 80, 0.55), rgba(30, 41, 59, 1));
+	background: radial-gradient(circle at top left, rgba(20, 184, 166, 0.22), transparent 40%), linear-gradient(180deg, rgba(23, 56, 72, 0.55), rgba(16, 39, 51, 1));
 
 	h2 {
 		font-size: 24px;
@@ -65,8 +67,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: rgba(99, 102, 241, 0.18);
-	color: #c7d2fe;
+	background: rgba(20, 184, 166, 0.2);
+	color: #99f6e4;
 	font-size: 28px;
 	font-weight: 800;
 	flex-shrink: 0;
@@ -122,7 +124,7 @@
 
 @media (max-width: 768px) {
 	.profile-page {
-		padding: 20px 16px 28px;
+		padding: 14px;
 	}
 
 	.identity-card {

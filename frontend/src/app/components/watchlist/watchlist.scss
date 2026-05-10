@@ -1,5 +1,7 @@
 .watchlist-page {
-	padding: 28px 32px;
+	width: min(1120px, 100%);
+	margin: 0 auto;
+	padding: clamp(16px, 3vw, 28px) clamp(14px, 3vw, 32px);
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
@@ -127,12 +129,16 @@
 
 @media (max-width: 768px) {
 	.watchlist-page {
-		padding: 20px 16px 28px;
+		padding: 14px;
 	}
 
 	.page-head {
 		align-items: stretch;
 		flex-direction: column;
+
+		.btn {
+			width: 100%;
+		}
 	}
 }
 
